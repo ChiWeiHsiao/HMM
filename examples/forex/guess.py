@@ -1,6 +1,9 @@
 import os
+import sys
 import numpy as np
 from hmm.hmm import DiscreteHMM
+
+TUNE_NUM_TRAIN_SEQ = int(sys.argv[1])
 
 # Mapping between raw observed datas and features
 EPS = 0.00001
@@ -62,7 +65,7 @@ predict_cnt = {
 }
 # Reading input file
 raw_seq = []
-with open(os.path.join(os.path.dirname(__file__), 'small_input.txt')) as f:
+with open(os.path.join(os.path.dirname(__file__), 'input.txt')) as f:
     for line in f:
         raw_seq.append(float(line.strip()))
 obs_seq = []
@@ -72,12 +75,13 @@ for r in raw_seq:
 # Setting model
 num_hidden_var = 6
 num_obs_var = len(id_2_obs)
-num_train_seq = 10
+num_train_seq = TUNE_NUM_TRAIN_SEQ #10
 
 # Training the model best describe the observation
 good_correct = 0
 good_total = 0
 correct_num = 0
+
 total = 0
 correct_rise = 0
 correct_down = 0
@@ -94,22 +98,21 @@ for t in range(num_train_seq, len(obs_seq)-1):
 
     #np.set_printoptios(precision=2, suppress=True)
     if ( guess > obs_seq[t-1]):
-        print('==================================================================')
         total += 1 
         if( obs_seq[t] > obs_seq[t-1]):
             correct_rise += 1
-            print ('rise, O')
+            print ('O rise, %3d -> %3d' % (obs_seq[t-1], guess))
         else:
             false_rise += 1
-            print('rise, X')
+            print('X rise, %3d -> %3d, REAL: %3d -> %3d' % (obs_seq[t-1], guess, obs_seq[t-1], obs_seq[t]))
     elif( guess < obs_seq[t-1] ):
         total += 1 
         if( obs_seq[t] < obs_seq[t-1]):
             correct_down += 1
-            print('down, O')
+            print ('O down, %3d -> %3d' % (obs_seq[t-1], guess))
         else:
             false_down += 1
-            print('down, X')
+            print('X down, %3d -> %3d, REAL: %3d -> %3d' % (obs_seq[t-1], guess, obs_seq[t-1], obs_seq[t]))
     '''
     print('t = ', t)
     print('belief:', belief)
