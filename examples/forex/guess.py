@@ -1,7 +1,9 @@
 import os
+import sys
 import numpy as np
 from hmm.hmm import DiscreteHMM
 
+TUNE_NUM_TRAIN_SEQ = int(sys.argv[1])
 # Mapping between raw observed datas and features
 EPS = 0.00001
 def obs_2_id(obs):
@@ -37,7 +39,7 @@ for t in range(len(raw_seq)-1):
 # Setting model
 num_hidden_var = 6
 num_obs_var = len(id_2_obs)
-num_train_seq = 10
+num_train_seq = TUNE_NUM_TRAIN_SEQ#10
 
 # Training the model best describe the observation
 good_correct = 0
